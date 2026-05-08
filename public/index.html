@@ -668,16 +668,6 @@
 
   <!-- ===================== SCRIPTS ===================== -->
 
-  <!-- Supabase JS Client (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-
-  <script>
-    /* ============================================================
-       KONFIGURASI — GANTI NILAI INI SESUAI PROJECT SUPABASE KAMU
-    ============================================================ */
-    const SUPABASE_URL    = "GANTI_DENGAN_SUPABASE_URL_KAMU";       // contoh: https://xyzabc.supabase.co
-    const SUPABASE_ANON_KEY = "GANTI_DENGAN_SUPABASE_ANON_KEY_KAMU"; // dari Settings > API
-
     /* ============================================================
        KONFIGURASI LOKASI SEKOLAH — UBAH SESUAI KEBUTUHAN
     ============================================================ */
@@ -685,31 +675,49 @@
       latitude:  -6.469821658683405,   // ← Ganti jika perlu
       longitude: 107.07387463910511,   // ← Ganti jika perlu
     };
-    const RADIUS_METER = 100;          // ← Radius valid dalam meter
-
-    /* ============================================================
-       INISIALISASI SUPABASE
-    ============================================================ */
-    const { createClient } = supabase;
-    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const RADIUS_METER = 150;          // ← Radius valid dalam meter
 
     /* ============================================================
        JAM LANGSUNG (LIVE CLOCK)
     ============================================================ */
+    const HARI  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const BULAN = ['Januari','Februari','Maret','April','Mei','Juni',
+                   'Juli','Agustus','September','Oktober','November','Desember'];
+
+    function getOffsetLabel() {
+      // getTimezoneOffset() mengembalikan nilai NEGATIF untuk zona timur (misal WIB = -420)
+      const offsetMin = -new Date().getTimezoneOffset();
+      const sign = offsetMin >= 0 ? '+' : '-';
+      const abs  = Math.abs(offsetMin);
+      const h    = String(Math.floor(abs / 60)).padStart(2, '0');
+      const m    = String(abs % 60).padStart(2, '0');
+      return `UTC${sign}${h}:${m}`;
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, '0');
+    }
+
     function updateClock() {
       const now = new Date();
 
+      // ── JAM format 24 jam (HH:MM:SS) ──────────────────────────────────
       document.getElementById('clock').textContent =
-        now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+      // ── TANGGAL dalam Bahasa Indonesia ─────────────────────────────────
+      const namaHari   = HARI[now.getDay()];
+      const tanggal    = now.getDate();
+      const namaBulan  = BULAN[now.getMonth()];
+      const tahun      = now.getFullYear();
+      const offsetLabel = getOffsetLabel();
 
       document.getElementById('date').textContent =
-        now.toLocaleDateString('id-ID', {
-          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-        });
+        `${namaHari}, ${tanggal} ${namaBulan} ${tahun} • ${offsetLabel}`;
     }
-    updateClock();
-    setInterval(updateClock, 1000);
 
+    updateClock();                        // panggil sekali langsung
+    setInterval(updateClock, 1000);       // update tiap detik
     /* ============================================================
        ORG TOGGLE
     ============================================================ */
@@ -847,70 +855,48 @@
           const divisiInput= document.getElementById('divisi').value.trim();
           const orgInput   = document.getElementById('organisasi').value;
 
-          // 7. Kirim ke Supabase
-          const { error } = await db
-            .from('absensi_rapat')
-            .insert({
-              nama:             namaInput,
-              kelas:            kelasInput,
-              divisi:           divisiInput || null,
-              organisasi:       orgInput,
-              waktu_absen:      waktuAbsen,
-              latitude:         userLat,
-              longitude:        userLon,
-              jarak_meter:      parseFloat(jarak.toFixed(2)),
-              status_kehadiran: 'HADIR',
-            });
+          // 7. Kirim ke Vercel API Route → Neon PostgreSQL
+          const response = await fetch('/api/absen', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    nama:       namaInput,
+    kelas:      kelasInput,
+    divisi:     divisiInput || null,
+    organisasi: orgInput,
+    latitude,
+    longitude,
+    jarak_meter: parseFloat(jarak.toFixed(2)),
+  }),
+});
 
-          setLoading(false);
+const result = await response.json();
+setLoading(false);
 
-          if (error) {
-            console.error('Supabase error:', error);
-            tampilkanHasil(
-              'error', '⚠️', 'Gagal Menyimpan Data',
-              'Terjadi kesalahan saat mengirim data ke server. Coba lagi dalam beberapa saat. Error: ' + error.message
-            );
-            return;
-          }
+if (!response.ok) {
+  tampilkanHasil(
+    'error', '⚠️', 'Gagal Menyimpan Data',
+    'Terjadi kesalahan: ' + (result.error || 'Unknown error')
+  );
+  return;
+}
 
-          // 8. Tampilkan sukses
-          tampilkanHasil(
-            'success',
-            '✅',
-            'Absensi Berhasil!',
-            `Selamat datang, <strong>${namaInput}</strong>! Kehadiran kamu telah tercatat.`,
-            {
-              'Nama':       namaInput,
-              'Kelas':      kelasInput,
-              'Organisasi': orgInput,
-              'Waktu':      new Date(waktuAbsen).toLocaleString('id-ID'),
-              'Jarak':      `${jarakRounded} meter dari sekolah`,
-              'Status':     '🟢 HADIR — Tersimpan di database',
-            }
-          );
-        },
+// Tampilkan sukses (sama seperti sebelumnya)
+tampilkanHasil(
+  'success',
+  '✅',
+  'Absensi Berhasil!',
+  `Selamat datang, <strong>${namaInput}</strong>! Kehadiran kamu telah tercatat.`,
+  {
+    'Nama'      : namaInput,
+    'Kelas'     : kelasInput,
+    'Organisasi': orgInput,
+    'Waktu'     : new Date().toLocaleString('id-ID'),
+    'Jarak'     : `${Math.round(jarak)} meter dari sekolah`,
+    'Status'    : '🟢 HADIR — Tersimpan di database',
+  }
+);
 
-        // Error handler geolocation
-        (err) => {
-          setLoading(false);
-          const pesanError = {
-            1: 'Akses lokasi ditolak. Izinkan akses lokasi di browser kamu, lalu coba lagi.',
-            2: 'Lokasi tidak tersedia. Pastikan GPS aktif dan kamu berada di area bersinyal.',
-            3: 'Waktu habis saat mengambil lokasi. Coba lagi.',
-          };
-          updateLocStatus('❌', 'Gagal mengambil lokasi', '');
-          tampilkanHasil('error', '📵', 'Lokasi Tidak Dapat Diakses',
-            pesanError[err.code] || 'Terjadi kesalahan tidak diketahui.');
-        },
-
-        // Opsi geolocation
-        {
-          enableHighAccuracy: true,  // Gunakan GPS hardware jika tersedia
-          timeout: 15000,            // Batas waktu 15 detik
-          maximumAge: 0,             // Selalu ambil lokasi terbaru, tidak cache
-        }
-      );
-    }
 
     /* ============================================================
        HELPER FUNCTIONS
