@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#0f1923" />
+  <title>ABSENSI RAPAT — OSIS & MPK SMAN 2 Jonggol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS & CSS VARIABLES
+    ============================================================ */
+    :root {
+      --bg-deep:    #0b1220;
+      --bg-card:    #111827;
+      --bg-surface: #1a2537;
+      --border:     rgba(99, 140, 255, 0.15);
+      --border-glow:rgba(99, 140, 255, 0.5);
+
+      --accent:     #4f8aff;
+      --accent-dim: rgba(79, 138, 255, 0.12);
+      --accent-glow:rgba(79, 138, 255, 0.35);
+
+      --osis:       #38bdf8;
+      --mpk:        #a78bfa;
+
+      --success:    #22d3a8;
+      --success-bg: rgba(34, 211, 168, 0.08);
+      --error:      #f87171;
+      --error-bg:   rgba(248, 113, 113, 0.08);
+      --warning:    #fbbf24;
+
+      --text-primary:   #f0f4ff;
+      --text-secondary: #8b9cc8;
+      --text-muted:     #4a5578;
+
+      --font-display: 'Syne', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+      --font-body:    'DM Sans', sans-serif;
+
+      --radius-sm: 8px;
+      --radius:    14px;
+      --radius-lg: 20px;
+
+      --shadow-card: 0 4px 32px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
+      --shadow-glow: 0 0 40px var(--accent-glow);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 60px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Subtle grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(79,138,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,138,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Ambient glow top */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(79,138,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    header {
+      width: 100%;
+      max-width: 480px;
+      padding: 40px 24px 24px;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .school-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .school-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .header-title {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 7vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .header-title span {
+      background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    /* ============================================================
+       MAIN CARD
+    ============================================================ */
+    main {
+      width: 100%;
+      max-width: 480px;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .card-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ============================================================
+       FORM ELEMENTS
+    ============================================================ */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-group:last-of-type { margin-bottom: 0; }
+
+    label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.03em;
+    }
+
+    input, select {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input::placeholder { color: var(--text-muted); }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+      background: rgba(79,138,255,0.05);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    /* Custom select arrow */
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper::after {
+      content: '▾';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      pointer-events: none;
+      font-size: 14px;
+    }
+
+    select option {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
+    /* ============================================================
+       ORG SELECTOR (toggle)
+    ============================================================ */
+    .org-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .org-btn {
+      padding: 12px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .org-btn:hover { border-color: var(--border-glow); }
+
+    .org-btn.active[data-org="OSIS"] {
+      border-color: var(--osis);
+      color: var(--osis);
+      background: rgba(56, 189, 248, 0.08);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+    }
+
+    .org-btn.active[data-org="MPK"] {
+      border-color: var(--mpk);
+      color: var(--mpk);
+      background: rgba(167, 139, 250, 0.08);
+      box-shadow: 0 0 20px rgba(167, 139, 250, 0.15);
+    }
+
+    .org-btn small {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 400;
+      margin-top: 2px;
+      opacity: 0.7;
+    }
+
+    /* ============================================================
+       LOCATION STATUS WIDGET
+    ============================================================ */
+    .location-widget {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .loc-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: var(--accent-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .loc-info { flex: 1; min-width: 0; }
+
+    .loc-status-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .loc-coords {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .loc-distance-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       SUBMIT BUTTON
+    ============================================================ */
+    .btn-absen {
+      width: 100%;
+      padding: 17px 24px;
+      border: none;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #4f8aff 0%, #7c5af8 100%);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 4px 20px rgba(79, 138, 255, 0.4);
+    }
+
+    .btn-absen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .btn-absen:hover:not(:disabled)::before { opacity: 1; }
+
+    .btn-absen:active:not(:disabled) {
+      transform: scale(0.98);
+      box-shadow: 0 2px 10px rgba(79, 138, 255, 0.3);
+    }
+
+    .btn-absen:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-absen .btn-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Loading spinner inside button */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-absen.loading .spinner { display: block; }
+    .btn-absen.loading .btn-text { opacity: 0.7; }
+
+    /* ============================================================
+       STATUS / RESULT OVERLAY
+    ============================================================ */
+    .result-card {
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      text-align: center;
+      display: none;
+      animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .result-card.show { display: block; }
+
+    .result-card.success {
+      background: var(--success-bg);
+      border: 1px solid rgba(34, 211, 168, 0.3);
+    }
+
+    .result-card.error {
+      background: var(--error-bg);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      display: block;
+      animation: pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .result-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .result-card.success .result-title { color: var(--success); }
+    .result-card.error .result-title { color: var(--error); }
+
+    .result-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .result-meta {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      text-align: left;
+    }
+
+    .btn-ulang {
+      margin-top: 18px;
+      display: inline-block;
+      padding: 10px 24px;
+      border-radius: 999px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: var(--font-body);
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-ulang:hover {
+      border-color: var(--border-glow);
+      color: var(--text-primary);
+    }
+
+    /* ============================================================
+       CLOCK
+    ============================================================ */
+    .live-clock {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .live-date {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding-top: 32px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* ============================================================
+       RESPONSIVE TWEAKS
+    ============================================================ */
+    @media (max-width: 400px) {
+      .card { padding: 18px; }
+      header { padding: 28px 16px 16px; }
+      main { padding: 0 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== HEADER ===================== -->
+  <header>
+    <div class="school-badge">SMAN 2 Jonggol — Nawasena</div>
+    <h1 class="header-title">Absensi <span>Rapat</span></h1>
+    <p class="header-sub">Sistem validasi kehadiran berbasis lokasi</p>
+  </header>
+
+  <!-- ===================== MAIN ===================== -->
+  <main>
+
+    <!-- CLOCK CARD -->
+    <div class="card">
+      <div class="live-clock" id="clock">--:--:--</div>
+      <div class="live-date" id="date">Memuat tanggal...</div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="card" id="form-card">
+      <div class="card-label">01 — Identitas</div>
+
+      <!-- Organisasi Toggle -->
+      <div class="form-group">
+        <label>Organisasi</label>
+        <div class="org-toggle">
+          <button class="org-btn active" data-org="OSIS" onclick="selectOrg(this)">
+            OSIS <small>Pengurus Inti</small>
+          </button>
+          <button class="org-btn" data-org="MPK" onclick="selectOrg(this)">
+            MPK <small>Majelis Perwakilan</small>
+          </button>
+        </div>
+        <input type="hidden" id="organisasi" value="OSIS" />
+      </div>
+
+      <!-- Nama -->
+      <div class="form-group">
+        <label for="nama">Nama Lengkap</label>
+        <input type="text" id="nama" placeholder="Masukkan nama lengkap..." autocomplete="name" />
+      </div>
+
+      <!-- Kelas -->
+      <div class="form-group">
+        <label for="kelas">Kelas</label>
+        <div class="select-wrapper">
+          <select id="kelas">
+            <option value="">— Pilih Kelas —</option>
+            <optgroup label="Kelas X">
+              <option>X-1</option><option>X-2</option><option>X-3</option>
+              <option>X-4</option><option>X-5</option><option>X-6</option>
+              <option>X-7</option><option>X-8</option><option>X-9</option>
+            </optgroup>
+            <optgroup label="Kelas XI">
+              <option>XI-1</option><option>XI-2</option><option>XI-3</option>
+              <option>XI-4</option><option>XI-5</option><option>XI-6</option>
+              <option>XI-7</option><option>XI-8</option><option>XI-9</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      <!-- Divisi -->
+      <div class="form-group">
+        <label for="divisi">Divisi / Jabatan</label>
+        <input type="text" id="divisi" placeholder="Contoh: Sekretaris, Bendahara, Div. Humas..." />
+      </div>
+
+      <!-- Location Widget -->
+      <div class="card-label" style="margin-top: 20px;">02 — Lokasi</div>
+      <div class="location-widget" id="loc-widget">
+        <div class="loc-icon">📍</div>
+        <div class="loc-info">
+          <div class="loc-status-text" id="loc-status">Belum mengambil lokasi</div>
+          <div class="loc-coords" id="loc-coords">Tekan tombol absen untuk memulai</div>
+        </div>
+        <div class="loc-distance-badge" id="loc-dist" style="display:none">-- m</div>
+      </div>
+
+      <br />
+
+      <!-- Submit Button -->
+      <button class="btn-absen" id="btn-absen" onclick="handleAbsen()">
+        <div class="btn-inner">
+          <div class="spinner"></div>
+          <span class="btn-text">📍 Absen Sekarang</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- RESULT CARD (hidden by default) -->
+    <div class="card result-card" id="result-card">
+      <span class="result-icon" id="result-icon">✅</span>
+      <div class="result-title" id="result-title">Absensi Berhasil!</div>
+      <div class="result-desc" id="result-desc">Data kehadiran kamu telah tersimpan.</div>
+      <div class="result-meta" id="result-meta"></div>
+      <button class="btn-ulang" onclick="resetForm()">↩ Absen Lagi</button>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>OSIS · MPK · SMAN 2 Jonggol · Nawasena</p>
+    <p style="margin-top:4px">Sistem Absensi Digital v1.0</p>
+  </footer>
+
+  <!-- ===================== SCRIPTS ===================== -->
+
+  <!-- Supabase JS Client (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <script>
+    /* ============================================================
+       KONFIGURASI — GANTI NILAI INI SESUAI PROJECT SUPABASE KAMU
+    ============================================================ */
+    const SUPABASE_URL    = "GANTI_DENGAN_SUPABASE_URL_KAMU";       // contoh: https://xyzabc.supabase.co
+    const SUPABASE_ANON_KEY = "GANTI_DENGAN_SUPABASE_ANON_KEY_KAMU"; // dari Settings > API
+
+    /* ============================================================
+       KONFIGURASI LOKASI SEKOLAH — UBAH SESUAI KEBUTUHAN
+    ============================================================ */
+    const SCHOOL_LOCATION = {
+      latitude:  -6.469821658683405,   // ← Ganti jika perlu
+      longitude: 107.07387463910511,   // ← Ganti jika perlu
+    };
+    const RADIUS_METER = 100;          // ← Radius valid dalam meter
+
+    /* ============================================================
+       INISIALISASI SUPABASE
+    ============================================================ */
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* ============================================================
+       JAM LANGSUNG (LIVE CLOCK)
+    ============================================================ */
+    function updateClock() {
+      const now = new Date();
+
+      document.getElementById('clock').textContent =
+        now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      document.getElementById('date').textContent =
+        now.toLocaleDateString('id-ID', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    /* ============================================================
+       ORG TOGGLE
+    ============================================================ */
+    function selectOrg(el) {
+      document.querySelectorAll('.org-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('organisasi').value = el.dataset.org;
+    }
+
+    /* ============================================================
+       VALIDASI FORM
+    ============================================================ */
+    function validateForm() {
+      const nama   = document.getElementById('nama').value.trim();
+      const kelas  = document.getElementById('kelas').value;
+      const org    = document.getElementById('organisasi').value;
+
+      if (!nama)  { showFormError('Nama lengkap harus diisi!'); return false; }
+      if (!kelas) { showFormError('Kelas harus dipilih!'); return false; }
+      if (!org)   { showFormError('Pilih organisasi terlebih dahulu!'); return false; }
+      return true;
+    }
+
+    function showFormError(msg) {
+      // Tampilkan notif error kecil (non-blocking)
+      const toast = document.createElement('div');
+      toast.textContent = '⚠️ ' + msg;
+      Object.assign(toast.style, {
+        position: 'fixed',
+        bottom: '24px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: '#1a2537',
+        border: '1px solid rgba(248,113,113,0.4)',
+        color: '#f87171',
+        padding: '12px 20px',
+        borderRadius: '10px',
+        fontSize: '13px',
+        fontFamily: "'DM Sans', sans-serif",
+        zIndex: 9999,
+        whiteSpace: 'nowrap',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+        animation: 'slide-up 0.3s ease'
+      });
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    /* ============================================================
+       RUMUS HAVERSINE — Menghitung jarak dua koordinat (meter)
+       Referensi: https://en.wikipedia.org/wiki/Haversine_formula
+    ============================================================ */
+    function hitungJarak(lat1, lon1, lat2, lon2) {
+      const R = 6371000; // Radius Bumi dalam meter
+      const phi1 = (lat1 * Math.PI) / 180;
+      const phi2 = (lat2 * Math.PI) / 180;
+      const dPhi = ((lat2 - lat1) * Math.PI) / 180;
+      const dLambda = ((lon2 - lon1) * Math.PI) / 180;
+
+      const a =
+        Math.sin(dPhi / 2) * Math.sin(dPhi / 2) +
+        Math.cos(phi1) * Math.cos(phi2) *
+        Math.sin(dLambda / 2) * Math.sin(dLambda / 2);
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c; // hasil dalam meter
+    }
+
+    /* ============================================================
+       FUNGSI UTAMA — HANDLE ABSEN
+    ============================================================ */
+    async function handleAbsen() {
+      // 1. Validasi form terlebih dahulu
+      if (!validateForm()) return;
+
+      // 2. Cek dukungan Geolocation
+      if (!navigator.geolocation) {
+        tampilkanHasil('error', '❌', 'Browser Tidak Didukung',
+          'Browser kamu tidak mendukung fitur lokasi GPS. Gunakan Chrome atau Firefox terbaru.');
+        return;
+      }
+
+      // 3. Set UI ke loading state
+      setLoading(true);
+      updateLocStatus('⏳', 'Mengambil lokasi GPS...', '');
+
+      // 4. Ambil koordinat pengguna
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const userLat = position.coords.latitude;
+          const userLon = position.coords.longitude;
+          const akurasi = position.coords.accuracy.toFixed(0);
+
+          // Update UI lokasi
+          updateLocStatus('📌', `Lokasi ditemukan (±${akurasi}m)`,
+            `${userLat.toFixed(6)}, ${userLon.toFixed(6)}`);
+
+          // 5. Hitung jarak dari sekolah menggunakan Haversine
+          const jarak = hitungJarak(
+            userLat, userLon,
+            SCHOOL_LOCATION.latitude, SCHOOL_LOCATION.longitude
+          );
+
+          const jarakRounded = Math.round(jarak);
+
+          // Update badge jarak
+          const distBadge = document.getElementById('loc-dist');
+          distBadge.style.display = 'block';
+          distBadge.textContent = `${jarakRounded} m`;
+
+          // 6. ──────── VALIDASI KRITIS: CEK RADIUS ────────
+          if (jarak > RADIUS_METER) {
+            // ❌ DI LUAR SEKOLAH — TOLAK, JANGAN KIRIM KE DATABASE
+            setLoading(false);
+            tampilkanHasil(
+              'error',
+              '🚫',
+              'Di Luar Area Sekolah',
+              `Absensi ditolak. Kamu terdeteksi sejauh <strong>${jarakRounded} meter</strong>
+               dari SMAN 2 Jonggol. Batas maksimal adalah ${RADIUS_METER} meter.`,
+              {
+                'Koordinat Kamu': `${userLat.toFixed(6)}, ${userLon.toFixed(6)}`,
+                'Jarak Terdeteksi': `${jarakRounded} meter`,
+                'Radius Valid': `${RADIUS_METER} meter`,
+                'Status': '🔴 DITOLAK — Data tidak disimpan',
+              }
+            );
+            return; // ← BERHENTI DI SINI, tidak ada data yang dikirim
+          }
+
+          // ✅ DALAM RADIUS — Lanjutkan simpan ke Supabase
+          const waktuAbsen = new Date().toISOString();
+          const namaInput  = document.getElementById('nama').value.trim();
+          const kelasInput = document.getElementById('kelas').value;
+          const divisiInput= document.getElementById('divisi').value.trim();
+          const orgInput   = document.getElementById('organisasi').value;
+
+          // 7. Kirim ke Supabase
+          const { error } = await db
+            .from('absensi_rapat')
+            .insert({
+              nama:             namaInput,
+              kelas:            kelasInput,
+              divisi:           divisiInput || null,
+              organisasi:       orgInput,
+              waktu_absen:      waktuAbsen,
+              latitude:         userLat,
+              longitude:        userLon,
+              jarak_meter:      parseFloat(jarak.toFixed(2)),
+              status_kehadiran: 'HADIR',
+            });
+
+          setLoading(false);
+
+          if (error) {
+            console.error('Supabase error:', error);
+            tampilkanHasil(
+              'error', '⚠️', 'Gagal Menyimpan Data',
+              'Terjadi kesalahan saat mengirim data ke server. Coba lagi dalam beberapa saat. Error: ' + error.message
+            );
+            return;
+          }
+
+          // 8. Tampilkan sukses
+          tampilkanHasil(
+            'success',
+            '✅',
+            'Absensi Berhasil!',
+            `Selamat datang, <strong>${namaInput}</strong>! Kehadiran kamu telah tercatat.`,
+            {
+              'Nama':       namaInput,
+              'Kelas':      kelasInput,
+              'Organisasi': orgInput,
+              'Waktu':      new Date(waktuAbsen).toLocaleString('id-ID'),
+              'Jarak':      `${jarakRounded} meter dari sekolah`,
+              'Status':     '🟢 HADIR — Tersimpan di database',
+            }
+          );
+        },
+
+        // Error handler geolocation
+        (err) => {
+          setLoading(false);
+          const pesanError = {
+            1: 'Akses lokasi ditolak. Izinkan akses lokasi di browser kamu, lalu coba lagi.',
+            2: 'Lokasi tidak tersedia. Pastikan GPS aktif dan kamu berada di area bersinyal.',
+            3: 'Waktu habis saat mengambil lokasi. Coba lagi.',
+          };
+          updateLocStatus('❌', 'Gagal mengambil lokasi', '');
+          tampilkanHasil('error', '📵', 'Lokasi Tidak Dapat Diakses',
+            pesanError[err.code] || 'Terjadi kesalahan tidak diketahui.');
+        },
+
+        // Opsi geolocation
+        {
+          enableHighAccuracy: true,  // Gunakan GPS hardware jika tersedia
+          timeout: 15000,            // Batas waktu 15 detik
+          maximumAge: 0,             // Selalu ambil lokasi terbaru, tidak cache
+        }
+      );
+    }
+
+    /* ============================================================
+       HELPER FUNCTIONS
+    ============================================================ */
+    function setLoading(state) {
+      const btn = document.getElementById('btn-absen');
+      btn.disabled = state;
+      btn.classList.toggle('loading', state);
+    }
+
+    function updateLocStatus(icon, status, coords) {
+      document.querySelector('.loc-icon').textContent = icon;
+      document.getElementById('loc-status').textContent = status;
+      document.getElementById('loc-coords').textContent = coords;
+    }
+
+    function tampilkanHasil(type, icon, title, desc, meta = null) {
+      const resultCard = document.getElementById('result-card');
+      const formCard   = document.getElementById('form-card');
+
+      document.getElementById('result-icon').textContent = icon;
+      document.getElementById('result-title').textContent = title;
+      document.getElementById('result-desc').innerHTML = desc;
+
+      // Meta info
+      const metaEl = document.getElementById('result-meta');
+      if (meta) {
+        metaEl.innerHTML = Object.entries(meta)
+          .map(([k, v]) => `<div><span style="color:var(--text-muted)">${k}:</span> ${v}</div>`)
+          .join('');
+      } else {
+        metaEl.innerHTML = '';
+      }
+
+      resultCard.className = `card result-card show ${type}`;
+      formCard.style.display = 'none';
+      resultCard   .scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetForm() {
+      document.getElementById('result-card').className = 'card result-card';
+      document.getElementById('form-card').style.display = 'block';
+      document.getElementById('loc-dist').style.display = 'none';
+      updateLocStatus('📍', 'Belum mengambil lokasi', 'Tekan tombol absen untuk memulai');
+      setLoading(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
