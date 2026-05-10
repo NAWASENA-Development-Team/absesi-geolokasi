@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — Absensi Rapat Nawasena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────────────── */
+    :root {
+      --bg:         #06080f;
+      --bg-1:       #0d1117;
+      --bg-2:       #161b27;
+      --bg-3:       #1e2535;
+      --line:       rgba(255,255,255,.06);
+      --line-hi:    rgba(255,255,255,.12);
+
+      --ink:        #e8edf8;
+      --ink-2:      #8892aa;
+      --ink-3:      #4a526a;
+
+      --blue:       #4d9fff;
+      --blue-dim:   rgba(77,159,255,.1);
+      --blue-glow:  rgba(77,159,255,.25);
+      --violet:     #9b7ff4;
+      --violet-dim: rgba(155,127,244,.1);
+      --teal:       #2dd4bf;
+      --teal-dim:   rgba(45,212,191,.1);
+      --amber:      #f59e0b;
+      --amber-dim:  rgba(245,158,11,.1);
+      --red:        #f06060;
+      --red-dim:    rgba(240,96,96,.1);
+      --green:      #34d399;
+      --green-dim:  rgba(52,211,153,.1);
+
+      --font:      'Outfit', sans-serif;
+      --mono:      'JetBrains Mono', monospace;
+      --r:         10px;
+      --r-lg:      16px;
+    }
+
+    /* ── RESET ──────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      opacity: .025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ── LOGIN SCREEN ───────────────────────────────────────────────── */
+    #login-screen {
+      position: fixed; inset: 0; z-index: 100;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .login-box {
+      width: 100%; max-width: 380px;
+      padding: 0 24px;
+      text-align: center;
+    }
+
+    .login-logo {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--violet) 100%);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 40px var(--blue-glow);
+    }
+
+    .login-title {
+      font-size: 22px; font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .login-sub {
+      font-size: 13px; color: var(--ink-2);
+      margin-bottom: 28px;
+    }
+
+    .login-input-wrap { position: relative; margin-bottom: 12px; }
+
+    .login-input-wrap input {
+      width: 100%; padding: 14px 16px 14px 44px;
+      background: var(--bg-2); border: 1px solid var(--line-hi);
+      border-radius: var(--r); font-family: var(--mono);
+      font-size: 14px; color: var(--ink); outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      letter-spacing: .04em;
+    }
+
+    .login-input-wrap input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-dim);
+    }
+
+    .login-input-wrap .lock-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px; opacity: .5;
+    }
+
+    .btn-login {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--violet) 100%);
+      border: none; border-radius: var(--r);
+      color: #fff; font-family: var(--font);
+      font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: opacity .2s, transform .15s;
+      box-shadow: 0 4px 24px var(--blue-glow);
+    }
+
+    .btn-login:hover { opacity: .9; }
+    .btn-login:active { transform: scale(.98); }
+
+    .login-err {
+      margin-top: 12px; font-size: 13px; color: var(--red);
+      display: none;
+    }
+
+    /* ── APP SHELL ──────────────────────────────────────────────────── */
+    #app { display: none; flex-direction: column; min-height: 100vh; position: relative; z-index: 1; }
+
+    /* ── TOPBAR ─────────────────────────────────────────────────────── */
+    .topbar {
+      height: 56px;
+      background: rgba(13,17,23,.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      position: sticky; top: 0; z-index: 50;
+    }
+
+    .topbar-left {
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .topbar-logo {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+
+    .topbar-title {
+      font-size: 15px; font-weight: 700;
+      letter-spacing: -.01em;
+    }
+
+    .topbar-badge {
+      font-size: 10px; font-weight: 600;
+      padding: 2px 8px; border-radius: 999px;
+      background: var(--blue-dim);
+      color: var(--blue); border: 1px solid rgba(77,159,255,.2);
+      font-family: var(--mono);
+    }
+
+    .topbar-right {
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    #live-clock {
+      font-family: var(--mono); font-size: 13px; color: var(--ink-2);
+    }
+
+    .btn-refresh {
+      padding: 7px 14px; border-radius: 8px;
+      background: var(--bg-2); border: 1px solid var(--line-hi);
+      color: var(--ink-2); font-family: var(--font); font-size: 13px;
+      font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: background .15s, color .15s;
+    }
+
+    .btn-refresh:hover { background: var(--bg-3); color: var(--ink); }
+
+    .btn-refresh .ico { transition: transform .4s; }
+    .btn-refresh.spinning .ico { animation: spin .6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── CONTENT ────────────────────────────────────────────────────── */
+    .content { padding: 28px 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+    /* ── PAGE HEADER ─────────────────────────────────────────────────── */
+    .page-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+    }
+
+    .page-title { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+    .page-sub   { font-size: 14px; color: var(--ink-2); margin-top: 4px; }
+
+    .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    /* ── FILTER BAR ──────────────────────────────────────────────────── */
+    .filter-bar {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .search-wrap { position: relative; flex: 1; min-width: 200px; }
+    .search-wrap input {
+      width: 100%; padding: 10px 12px 10px 38px;
+      background: var(--bg-1); border: 1px solid var(--line-hi);
+      border-radius: var(--r); font-family: var(--font); font-size: 14px;
+      color: var(--ink); outline: none; transition: border-color .2s;
+    }
+    .search-wrap input::placeholder { color: var(--ink-3); }
+    .search-wrap input:focus { border-color: var(--blue); }
+    .search-wrap .s-icon {
+      position: absolute; left: 11px; top: 50%;
+      transform: translateY(-50%); opacity: .4; font-size: 15px;
+    }
+
+    .filter-select {
+      padding: 10px 12px; background: var(--bg-1);
+      border: 1px solid var(--line-hi); border-radius: var(--r);
+      font-family: var(--font); font-size: 14px; color: var(--ink);
+      outline: none; cursor: pointer; -webkit-appearance: none;
+      padding-right: 32px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238892aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+    }
+
+    .filter-select option { background: var(--bg-2); }
+
+    /* ── STAT CARDS ──────────────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-1);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      padding: 18px 20px;
+      position: relative; overflow: hidden;
+      transition: border-color .2s;
+    }
+
+    .stat-card:hover { border-color: var(--line-hi); }
+
+    .stat-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+
+    .stat-card.blue::after  { background: linear-gradient(90deg, var(--blue), transparent); }
+    .stat-card.violet::after{ background: linear-gradient(90deg, var(--violet), transparent); }
+    .stat-card.teal::after  { background: linear-gradient(90deg, var(--teal), transparent); }
+    .stat-card.amber::after { background: linear-gradient(90deg, var(--amber), transparent); }
+
+    .stat-icon {
+      font-size: 20px; margin-bottom: 12px; display: block;
+    }
+
+    .stat-value {
+      font-size: 32px; font-weight: 800; letter-spacing: -.03em;
+      line-height: 1;
+    }
+
+    .stat-card.blue   .stat-value { color: var(--blue); }
+    .stat-card.violet .stat-value { color: var(--violet); }
+    .stat-card.teal   .stat-value { color: var(--teal); }
+    .stat-card.amber  .stat-value { color: var(--amber); }
+
+    .stat-label {
+      font-size: 12px; color: var(--ink-2); margin-top: 6px;
+      font-weight: 500; text-transform: uppercase; letter-spacing: .06em;
+    }
+
+    /* ── TABLE CONTAINER ─────────────────────────────────────────────── */
+    .table-wrap {
+      background: var(--bg-1);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .table-title { font-size: 14px; font-weight: 600; }
+    .table-count {
+      font-size: 12px; color: var(--ink-2);
+      font-family: var(--mono); background: var(--bg-2);
+      padding: 3px 10px; border-radius: 999px;
+    }
+
+    /* Scroll container */
+    .table-scroll { overflow-x: auto; }
+
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    thead th {
+      padding: 12px 16px;
+      text-align: left; white-space: nowrap;
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: var(--ink-3);
+      background: var(--bg-1);
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 2;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--line);
+      transition: background .12s;
+      cursor: default;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--bg-2); }
+
+    td {
+      padding: 13px 16px;
+      color: var(--ink); white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    /* Nama cell */
+    .cell-nama { font-weight: 600; }
+    .cell-nama-sub {
+      font-size: 11px; color: var(--ink-3); margin-top: 2px;
+      font-family: var(--mono);
+    }
+
+    /* Org badge */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 9px; border-radius: 999px;
+      font-size: 11px; font-weight: 600; white-space: nowrap;
+    }
+    .badge-osis  { background: rgba(77,159,255,.12); color: var(--blue); border: 1px solid rgba(77,159,255,.25); }
+    .badge-mpk   { background: rgba(155,127,244,.12); color: var(--violet); border: 1px solid rgba(155,127,244,.25); }
+    .badge-hadir { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,.25); }
+
+    /* Waktu */
+    .cell-time-main { font-weight: 500; }
+    .cell-time-date { font-size: 11px; color: var(--ink-3); font-family: var(--mono); margin-top: 2px; }
+
+    /* Koordinat */
+    .cell-coord { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+
+    /* Jarak */
+    .jarak-bar-wrap { display: flex; align-items: center; gap: 10px; }
+    .jarak-val { font-family: var(--mono); font-size: 13px; font-weight: 600; width: 48px; }
+    .jarak-bar-bg {
+      flex: 1; height: 4px; background: var(--bg-3);
+      border-radius: 999px; overflow: hidden; min-width: 60px;
+    }
+    .jarak-bar-fill { height: 100%; border-radius: 999px; transition: width .5s; }
+
+    /* ── EMPTY / LOADING ─────────────────────────────────────────────── */
+    .table-empty {
+      padding: 60px 24px; text-align: center;
+    }
+    .table-empty .ico { font-size: 36px; margin-bottom: 12px; display: block; opacity: .4; }
+    .table-empty p { color: var(--ink-2); font-size: 14px; }
+
+    /* ── SKELETON ────────────────────────────────────────────────────── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--bg-2) 25%, var(--bg-3) 50%, var(--bg-2) 75%);
+      background-size: 400% 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 6px; display: inline-block;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    /* ── EXPORT BTN ──────────────────────────────────────────────────── */
+    .btn-export {
+      padding: 8px 16px; border-radius: var(--r);
+      background: var(--teal-dim);
+      border: 1px solid rgba(45,212,191,.25);
+      color: var(--teal); font-family: var(--font);
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: background .15s;
+    }
+    .btn-export:hover { background: rgba(45,212,191,.18); }
+
+    /* ── PAGINATION ──────────────────────────────────────────────────── */
+    .pagination {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; border-top: 1px solid var(--line);
+      flex-wrap: wrap; gap: 12px;
+    }
+    .page-info { font-size: 12px; color: var(--ink-2); }
+    .page-btns { display: flex; gap: 6px; }
+    .page-btn {
+      padding: 6px 12px; border-radius: 8px;
+      background: var(--bg-2); border: 1px solid var(--line);
+      color: var(--ink-2); font-size: 13px; font-family: var(--font);
+      cursor: pointer; transition: background .15s, color .15s;
+    }
+    .page-btn:hover:not(:disabled) { background: var(--bg-3); color: var(--ink); }
+    .page-btn:disabled { opacity: .35; cursor: not-allowed; }
+    .page-btn.active { background: var(--blue-dim); color: var(--blue); border-color: rgba(77,159,255,.3); }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .content { padding: 16px; }
+      .topbar { padding: 0 16px; }
+      .page-title { font-size: 20px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      #live-clock { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── LOGIN SCREEN ─────────────────────────────────────────────── -->
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">🛡️</div>
+      <div class="login-title">Admin Panel</div>
+      <div class="login-sub">Masukkan password untuk melanjutkan</div>
+
+      <div class="login-input-wrap">
+        <span class="lock-icon">🔑</span>
+        <input type="password" id="pwd-input" placeholder="Password admin..."
+               onkeydown="if(event.key==='Enter') doLogin()" />
+      </div>
+
+      <button class="btn-login" onclick="doLogin()">Masuk →</button>
+      <div class="login-err" id="login-err">Password salah. Coba lagi.</div>
+    </div>
+  </div>
+
+  <!-- ── APP SHELL ─────────────────────────────────────────────────── -->
+  <div id="app">
+
+    <!-- TOPBAR -->
+    <nav class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo">📋</div>
+        <span class="topbar-title">Absensi Nawasena</span>
+        <span class="topbar-badge">ADMIN</span>
+      </div>
+      <div class="topbar-right">
+        <span id="live-clock">--:--:--</span>
+        <button class="btn-refresh" id="btn-refresh" onclick="loadData()">
+          <span class="ico">↻</span> Refresh
+        </button>
+      </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div>
+          <div class="page-title">Monitoring Absensi Rapat</div>
+          <div class="page-sub" id="last-updated">Belum dimuat</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-export" onclick="exportCSV()">
+            ⬇ Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <span class="stat-icon">👥</span>
+          <div class="stat-value" id="s-total">—</div>
+          <div class="stat-label">Total Absen</div>
+        </div>
+        <div class="stat-card violet">
+          <span class="stat-icon">📅</span>
+          <div class="stat-value" id="s-today">—</div>
+          <div class="stat-label">Hari Ini</div>
+        </div>
+        <div class="stat-card teal">
+          <span class="stat-icon">🏫</span>
+          <div class="stat-value" id="s-osis">—</div>
+          <div class="stat-label">OSIS</div>
+        </div>
+        <div class="stat-card amber">
+          <span class="stat-icon">🏛️</span>
+          <div class="stat-value" id="s-mpk">—</div>
+          <div class="stat-label">MPK</div>
+        </div>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <span class="s-icon">🔍</span>
+          <input type="text" id="search" placeholder="Cari nama, kelas, divisi..."
+                 oninput="applyFilter()" />
+        </div>
+        <select class="filter-select" id="filter-org" onchange="applyFilter()">
+          <option value="">Semua Organisasi</option>
+          <option value="OSIS">OSIS</option>
+          <option value="MPK">MPK</option>
+        </select>
+        <select class="filter-select" id="filter-kelas" onchange="applyFilter()">
+          <option value="">Semua Kelas</option>
+        </select>
+        <select class="filter-select" id="filter-date" onchange="applyFilter()">
+          <option value="">Semua Tanggal</option>
+          <option value="today">Hari Ini</option>
+          <option value="week">7 Hari Terakhir</option>
+        </select>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">Data Kehadiran</span>
+          <span class="table-count" id="row-count">— entri</span>
+        </div>
+
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Peserta</th>
+                <th>Organisasi</th>
+                <th>Waktu Absen</th>
+                <th>Koordinat</th>
+                <th>Jarak</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr>
+                <td colspan="7">
+                  <div class="table-empty">
+                    <span class="ico">⏳</span>
+                    <p>Memuat data...</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <span class="page-info" id="page-info">—</span>
+          <div class="page-btns" id="page-btns"></div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /app -->
+
+  <script>
+    /* ── CONFIG ──────────────────────────────────────────────────────── */
+    const SCHOOL_LAT   = -6.469821658683405;
+    const SCHOOL_LON   = 107.07387463910511;
+    const RADIUS_METER = 100;
+    const PAGE_SIZE    = 20;
+
+    let allData     = [];
+    let filtered    = [];
+    let currentPage = 1;
+    let adminSecret = '';
+
+    /* ── LIVE CLOCK ─────────────────────────────────────────────────── */
+    const HARI  = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+    function pad(n) { return String(n).padStart(2,'0'); }
+
+    function tickClock() {
+      const now = new Date();
+      const el  = document.getElementById('live-clock');
+      if (el) el.textContent =
+        HARI[now.getDay()] + ' ' +
+        pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
+
+    /* ── LOGIN ───────────────────────────────────────────────────────── */
+    window.addEventListener('load', () => {
+      document.getElementById('pwd-input').focus();
+    });
+
+    function doLogin() {
+      const pwd = document.getElementById('pwd-input').value.trim();
+      if (!pwd) return;
+
+      // Test koneksi ke API dengan secret yang dimasukkan
+      fetch('/api/admin-data?secret=' + encodeURIComponent(pwd))
+        .then(r => {
+          if (r.ok) {
+            adminSecret = pwd;
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
+            loadData();
+          } else {
+            document.getElementById('login-err').style.display = 'block';
+            document.getElementById('pwd-input').value = '';
+            document.getElementById('pwd-input').focus();
+          }
+        })
+        .catch(() => {
+          document.getElementById('login-err').textContent = 'Gagal terhubung ke server.';
+          document.getElementById('login-err').style.display = 'block';
+        });
+    }
+
+    /* ── LOAD DATA ──────────────────────────────────────────────────── */
+    async function loadData() {
+      const btn = document.getElementById('btn-refresh');
+      btn.classList.add('spinning');
+      btn.disabled = true;
+
+      try {
+        const res  = await fetch('/api/admin-data?secret=' + encodeURIComponent(adminSecret));
+        const json = await res.json();
+
+        if (!res.ok) throw new Error(json.error || 'Error');
+
+        allData = json.data || [];
+        updateStats(json.stats || {});
+        buildKelasFilter();
+        applyFilter();
+
+        const now = new Date();
+        document.getElementById('last-updated').textContent =
+          'Diperbarui: ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+
+      } catch (err) {
+        renderError('Gagal memuat data: ' + err.message);
+      } finally {
+        btn.classList.remove('spinning');
+        btn.disabled = false;
+      }
+    }
+
+    /* ── UPDATE STATS ────────────────────────────────────────────────── */
+    function updateStats(s) {
+      document.getElementById('s-total').textContent = s.total  ?? '—';
+      document.getElementById('s-today').textContent = s.hadir_hari_ini ?? '—';
+      document.getElementById('s-osis').textContent  = s.total_osis ?? '—';
+      document.getElementById('s-mpk').textContent   = s.total_mpk  ?? '—';
+    }
+
+    /* ── BUILD KELAS FILTER ──────────────────────────────────────────── */
+    function buildKelasFilter() {
+      const set = [...new Set(allData.map(r => r.kelas))].sort();
+      const sel = document.getElementById('filter-kelas');
+      const cur = sel.value;
+      sel.innerHTML = '<option value="">Semua Kelas</option>' +
+        set.map(k => `<option value="${k}">${k}</option>`).join('');
+      sel.value = cur;
+    }
+
+    /* ── FILTER ──────────────────────────────────────────────────────── */
+    function applyFilter() {
+      const q    = document.getElementById('search').value.toLowerCase().trim();
+      const org  = document.getElementById('filter-org').value;
+      const kls  = document.getElementById('filter-kelas').value;
+      const date = document.getElementById('filter-date').value;
+
+      const now   = new Date();
+      const today = now.toDateString();
+      const week  = new Date(now - 7 * 86400000);
+
+      filtered = allData.filter(r => {
+        const absenDate = new Date(r.waktu_absen);
+        if (q && !((r.nama + r.kelas + r.divisi).toLowerCase().includes(q))) return false;
+        if (org && r.organisasi !== org) return false;
+        if (kls && r.kelas !== kls) return false;
+        if (date === 'today' && absenDate.toDateString() !== today) return false;
+        if (date === 'week' && absenDate < week) return false;
+        return true;
+      });
+
+      currentPage = 1;
+      renderTable();
+    }
+
+    /* ── RENDER TABLE ────────────────────────────────────────────────── */
+    function renderTable() {
+      const tbody = document.getElementById('table-body');
+      document.getElementById('row-count').textContent = filtered.length + ' entri';
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr><td colspan="7">
+            <div class="table-empty">
+              <span class="ico">📭</span>
+              <p>Tidak ada data yang cocok</p>
+            </div>
+          </td></tr>`;
+        renderPagination();
+        return;
+      }
+
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const page  = filtered.slice(start, start + PAGE_SIZE);
+
+      tbody.innerHTML = page.map((r, i) => {
+        const absen     = new Date(r.waktu_absen);
+        const jam       = pad(absen.getHours()) + ':' + pad(absen.getMinutes());
+        const tgl       = absen.getDate() + ' ' + ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][absen.getMonth()] + ' ' + absen.getFullYear();
+        const jarakNum  = parseFloat(r.jarak_meter) || 0;
+        const pct       = Math.min(100, (jarakNum / RADIUS_METER) * 100).toFixed(1);
+        const barColor  = jarakNum <= 50 ? '#34d399' : jarakNum <= 80 ? '#f59e0b' : '#4d9fff';
+        const globalIdx = start + i + 1;
+
+        const orgBadge = r.organisasi === 'OSIS'
+          ? '<span class="badge badge-osis">● OSIS</span>'
+          : '<span class="badge badge-mpk">● MPK</span>';
+
+        return `
+          <tr>
+            <td style="color:var(--ink-3);font-family:var(--mono);font-size:12px">${globalIdx}</td>
+            <td>
+              <div class="cell-nama">${esc(r.nama)}</div>
+              <div class="cell-nama-sub">${esc(r.kelas)} ${r.divisi !== '-' ? '· ' + esc(r.divisi) : ''}</div>
+            </td>
+            <td>${orgBadge}</td>
+            <td>
+              <div class="cell-time-main">${jam}</div>
+              <div class="cell-time-date">${tgl}</div>
+            </td>
+            <td>
+              <div class="cell-coord">${parseFloat(r.latitude).toFixed(6)}</div>
+              <div class="cell-coord">${parseFloat(r.longitude).toFixed(6)}</div>
+            </td>
+            <td>
+              <div class="jarak-bar-wrap">
+                <span class="jarak-val" style="color:${barColor}">${Math.round(jarakNum)}m</span>
+                <div class="jarak-bar-bg">
+                  <div class="jarak-bar-fill" style="width:${pct}%;background:${barColor}"></div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge badge-hadir">✓ ${esc(r.status_kehadiran)}</span></td>
+          </tr>`;
+      }).join('');
+
+      renderPagination();
+    }
+
+    /* ── PAGINATION ──────────────────────────────────────────────────── */
+    function renderPagination() {
+      const total  = filtered.length;
+      const pages  = Math.ceil(total / PAGE_SIZE);
+      const start  = (currentPage - 1) * PAGE_SIZE + 1;
+      const end    = Math.min(currentPage * PAGE_SIZE, total);
+
+      document.getElementById('page-info').textContent =
+        total ? `Menampilkan ${start}–${end} dari ${total}` : '—';
+
+      const btns = document.getElementById('page-btns');
+      btns.innerHTML = '';
+
+      if (pages <= 1) return;
+
+      // Prev
+      const prev = document.createElement('button');
+      prev.className = 'page-btn';
+      prev.textContent = '‹';
+      prev.disabled = currentPage === 1;
+      prev.onclick = () => { currentPage--; renderTable(); };
+      btns.appendChild(prev);
+
+      // Page numbers
+      for (let p = 1; p <= pages; p++) {
+        if (p === 1 || p === pages || Math.abs(p - currentPage) <= 1) {
+          const b = document.createElement('button');
+          b.className = 'page-btn' + (p === currentPage ? ' active' : '');
+          b.textContent = p;
+          b.onclick = () => { currentPage = p; renderTable(); };
+          btns.appendChild(b);
+        } else if (Math.abs(p - currentPage) === 2) {
+          const sp = document.createElement('span');
+          sp.style.cssText = 'color:var(--ink-3);padding:0 4px;line-height:32px';
+          sp.textContent = '…';
+          btns.appendChild(sp);
+        }
+      }
+
+      // Next
+      const next = document.createElement('button');
+      next.className = 'page-btn';
+      next.textContent = '›';
+      next.disabled = currentPage === pages;
+      next.onclick = () => { currentPage++; renderTable(); };
+      btns.appendChild(next);
+    }
+
+    /* ── EXPORT CSV ──────────────────────────────────────────────────── */
+    function exportCSV() {
+      const header = ['No','Nama','Kelas','Divisi','Organisasi','Waktu Absen','Latitude','Longitude','Jarak (m)','Status'];
+      const rows   = filtered.map((r, i) => [
+        i + 1,
+        '"' + (r.nama || '').replace(/"/g, '""') + '"',
+        r.kelas, r.divisi,
+        r.organisasi,
+        new Date(r.waktu_absen).toLocaleString('id-ID'),
+        r.latitude, r.longitude,
+        Math.round(r.jarak_meter),
+        r.status_kehadiran
+      ]);
+
+      const csv  = [header, ...rows].map(r => r.join(',')).join('\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = 'absensi-nawasena-' + new Date().toISOString().slice(0,10) + '.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    /* ── HELPERS ─────────────────────────────────────────────────────── */
+    function esc(str) {
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function renderError(msg) {
+      document.getElementById('table-body').innerHTML = `
+        <tr><td colspan="7">
+          <div class="table-empty">
+            <span class="ico">⚠️</span>
+            <p>${msg}</p>
+          </div>
+        </td></tr>`;
+    }
+  </script>
+</body>
+</html>
