@@ -4,7 +4,7 @@
 import { neon } from "@neondatabase/serverless";
 
 // Simpan ADMIN_SECRET di Vercel Environment Variables
-const ADMIN_SECRET = process.env.ADMIN_SECRET || "GANTI_PASSWORD_ADMIN_KAMU";
+const ADMIN_SECRET = process.env.ADMIN_SECRET || "OSIS26MPK26SECRET";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
