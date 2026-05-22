@@ -4,22 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="theme-color" content="#030712" />
-  <title>Absensi Rapat — OSIS & MPK SMAN 2 Jonggol</title>
+  <title>Nawasena Terminal — Absensi Rapat OSIS & MPK</title>
   
   <!-- Preconnect & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     /* ── SYSTEM DESIGN TOKENS (Identical with Admin Dashboard) ────────── */
     :root {
       /* Base Colors */
       --bg-base:      #030712;
-      --bg-card:      rgba(22, 28, 45, 0.45);
-      --bg-surface:  rgba(15, 23, 42, 0.7);
-      --bg-input:     rgba(15, 23, 42, 0.85);
-      --border-thin:  rgba(255, 255, 255, 0.06);
+      --bg-card:      rgba(15, 23, 42, 0.45);
+      --bg-surface:  rgba(20, 29, 56, 0.7);
+      --bg-input:     rgba(13, 18, 38, 0.85);
+      --border-thin:  rgba(255, 255, 255, 0.05);
       --border-hi:    rgba(255, 255, 255, 0.12);
       
       /* Typography */
@@ -51,9 +51,9 @@
 
       /* Border Radii */
       --r-sm:         8px;
-      --r-md:         12px;
-      --r-lg:         20px;
-      --r-xl:         28px;
+      --r-md:         14px;
+      --r-lg:         22px;
+      --r-xl:         30px;
     }
 
     /* ── RESET & BASE STYLING ────────────────────────────────────────── */
@@ -88,9 +88,9 @@
       inset: 0;
       z-index: 0;
       background-image: 
-        radial-gradient(at 50% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
-        radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.06) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.04) 0px, transparent 50%);
+        radial-gradient(at 50% 0%, rgba(139, 92, 246, 0.12) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.06) 0px, transparent 50%);
       pointer-events: none;
     }
 
@@ -100,9 +100,9 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(255, 255, 255, 0.005) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.005) 1px, transparent 1px);
-      background-size: 50px 50px;
+        linear-gradient(rgba(255, 255, 255, 0.003) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.003) 1px, transparent 1px);
+      background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
     }
@@ -111,7 +111,7 @@
     header {
       width: 100%;
       max-width: 480px;
-      padding: 48px 24px 24px;
+      padding: 40px 24px 20px;
       position: relative;
       z-index: 10;
       text-align: center;
@@ -127,12 +127,18 @@
       padding: 6px 16px;
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
+      font-weight: 600;
+      letter-spacing: 0.1em;
       color: var(--cyan);
       text-transform: uppercase;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+      animation: breathe-glow 4s ease-in-out infinite;
+    }
+
+    @keyframes breathe-glow {
+      0%, 100% { box-shadow: 0 0 10px rgba(6, 182, 212, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.05); }
+      50% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1); border-color: rgba(6, 182, 212, 0.4); }
     }
 
     .school-badge-glass svg {
@@ -143,16 +149,16 @@
 
     @keyframes pulse-icon {
       0%, 100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 2px var(--cyan)); }
-      50% { transform: scale(1.15); opacity: 0.6; filter: drop-shadow(0 0 8px var(--cyan)); }
+      50% { transform: scale(1.2); opacity: 0.7; filter: drop-shadow(0 0 8px var(--cyan)); }
     }
 
     .header-title-cyber {
-      font-size: clamp(26px, 7vw, 36px);
+      font-size: clamp(28px, 8vw, 38px);
       font-weight: 800;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.04em;
       line-height: 1.1;
       color: #fff;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .header-title-cyber span {
@@ -160,12 +166,14 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      filter: drop-shadow(0 2px 10px rgba(6, 182, 212, 0.2));
     }
 
     .header-sub-cyber {
-      font-size: 14px;
+      font-size: 13.5px;
       color: var(--text-muted);
-      font-weight: 300;
+      font-weight: 400;
+      letter-spacing: 0.02em;
     }
 
     /* ── CORE CONTAINERS & CARDS ─────────────────────────────────────── */
@@ -182,45 +190,104 @@
 
     .glass-card {
       background: var(--bg-card);
-      backdrop-filter: blur(25px) saturate(180%);
+      backdrop-filter: blur(20px) saturate(180%);
       border: 1px solid var(--border-thin);
       border-radius: var(--r-lg);
       padding: 28px 24px;
       box-shadow: 
-        0 24px 60px rgba(0, 0, 0, 0.7),
-        inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        0 24px 60px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 255, 255, 0.03);
       position: relative;
       overflow: hidden;
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out, box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Top thin neon glow line */
-    .glass-card::before {
+    .glass-card:hover {
+      box-shadow: 
+        0 30px 70px rgba(0, 0, 0, 0.7),
+        0 0 30px rgba(139, 92, 246, 0.08),
+        inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+
+    /* Custom Moving Backlit Rainbow Border */
+    .glass-card::after {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--cyan), var(--violet));
-      opacity: 0.75;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.5px;
+      background: linear-gradient(135deg, var(--cyan), var(--violet), var(--emerald), var(--cyan));
+      background-size: 300% 300%;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      z-index: 10;
+      animation: border-neon-flow 6s linear infinite;
+    }
+
+    @keyframes border-neon-flow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Holographic shine overlay */
+    .card-shine-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      border-radius: inherit;
+      background: transparent;
+      mix-blend-mode: overlay;
+    }
+
+    /* Laser Scanner Bar (Playful scanner animation) */
+    .laser-scanner {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, transparent 5%, var(--emerald) 40%, #fff 50%, var(--emerald) 60%, transparent 95%);
+      box-shadow: 0 0 10px var(--emerald), 0 0 20px var(--emerald);
+      z-index: 20;
+      pointer-events: none;
+      display: none;
+    }
+
+    .laser-scanner.scanning {
+      display: block;
+      animation: laser-scan 1.8s ease-in-out infinite;
+    }
+
+    @keyframes laser-scan {
+      0% { top: 0%; opacity: 0.2; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: 100%; opacity: 0.2; }
     }
 
     .card-heading-mono {
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
+      font-weight: 700;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--cyan);
       margin-bottom: 22px;
       display: flex;
       align-items: center;
       gap: 8px;
+      text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
     }
 
     .card-heading-mono::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: var(--border-thin);
+      background: linear-gradient(90deg, var(--border-thin), transparent);
     }
 
     /* ── FORM ELEMENTS ───────────────────────────────────────────────── */
@@ -229,6 +296,7 @@
       flex-direction: column;
       gap: 8px;
       margin-bottom: 18px;
+      transform: translateZ(10px); /* 3D pop */
     }
 
     .form-group:last-of-type {
@@ -237,10 +305,11 @@
 
     label {
       font-size: 12.5px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-muted);
-      letter-spacing: 0.03em;
+      letter-spacing: 0.05em;
       padding-left: 2px;
+      text-transform: uppercase;
     }
 
     input, select {
@@ -264,8 +333,8 @@
 
     input:focus, select:focus {
       border-color: var(--cyan);
-      background: rgba(13, 18, 30, 0.95);
-      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+      background: rgba(10, 15, 34, 0.95);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
     }
 
     .select-chevron-wrapper {
@@ -280,17 +349,22 @@
       pointer-events: none;
       width: 6px;
       height: 6px;
-      border-right: 1.5px solid var(--text-muted);
-      border-bottom: 1.5px solid var(--text-muted);
+      border-right: 2px solid var(--text-muted);
+      border-bottom: 2px solid var(--text-muted);
       transform: translateY(-70%) rotate(45deg);
+      transition: border-color 0.3s;
+    }
+
+    .select-chevron-wrapper:focus-within::after {
+      border-color: var(--cyan);
     }
 
     select option {
-      background: #0f1422;
+      background: #0d1226;
       color: var(--text-main);
     }
 
-    /* Organization Switcher buttons */
+    /* Organization Switcher buttons - Playful Design */
     .org-select-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -301,61 +375,78 @@
       padding: 14px 10px;
       border-radius: var(--r-md);
       border: 1px solid var(--border-thin);
-      background: var(--bg-surface);
+      background: rgba(255, 255, 255, 0.02);
       cursor: pointer;
       font-family: var(--font-outfit);
       font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
+      font-weight: 800;
+      letter-spacing: 0.06em;
       color: var(--text-muted);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
     .org-toggle-btn:hover {
       border-color: var(--border-hi);
       color: #fff;
+      transform: translateY(-2px);
     }
 
     .org-toggle-btn.active[data-org="OSIS"] {
       border-color: var(--cyan);
       color: var(--cyan);
       background: var(--cyan-dim);
-      box-shadow: 0 0 25px rgba(6, 182, 212, 0.15);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.2);
     }
 
     .org-toggle-btn.active[data-org="MPK"] {
       border-color: var(--violet);
       color: var(--violet);
       background: var(--violet-dim);
-      box-shadow: 0 0 25px rgba(139, 92, 246, 0.15);
+      box-shadow: 0 0 25px rgba(139, 92, 246, 0.2);
     }
 
     .org-toggle-btn small {
       display: block;
       font-family: var(--font-outfit);
       font-size: 11px;
-      font-weight: 400;
+      font-weight: 500;
       margin-top: 2px;
       opacity: 0.65;
       color: inherit;
     }
 
-    /* ── LOCATION GPS WIDGET ─────────────────────────────────────────── */
+    /* Dynamic Playful Badges under org */
+    .cadet-rank-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-top: 6px;
+      padding-left: 2px;
+      transition: color 0.3s;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── LOCATION GPS WIDGET (Sonar Radar Pulse) ───────────────────────── */
     .location-cyber-widget {
-      background: var(--bg-surface);
+      background: rgba(13, 20, 44, 0.55);
       border: 1px solid var(--border-thin);
       border-radius: var(--r-md);
       padding: 16px;
       display: flex;
       align-items: center;
       gap: 14px;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: visible; /* to allow sonar overflow */
     }
 
     .widget-gps-icon {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
       background: var(--cyan-dim);
       display: flex;
@@ -364,11 +455,38 @@
       color: var(--cyan);
       flex-shrink: 0;
       border: 1px solid rgba(6, 182, 212, 0.2);
+      position: relative;
+      transition: all 0.3s;
     }
 
     .widget-gps-icon svg {
       width: 20px;
       height: 20px;
+      z-index: 5;
+    }
+
+    /* Concentric sonar pulses */
+    .sonar-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      border: 1.5px solid var(--cyan);
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(1);
+    }
+
+    .sonar-ring.animating {
+      animation: sonar-expand 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+    
+    .sonar-ring:nth-child(2).animating { animation-delay: 0.6s; }
+    .sonar-ring:nth-child(3).animating { animation-delay: 1.2s; }
+
+    @keyframes sonar-expand {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(2.2); opacity: 0; }
     }
 
     .widget-gps-info {
@@ -378,15 +496,16 @@
 
     .widget-gps-status {
       font-size: 13.5px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-main);
+      letter-spacing: 0.02em;
     }
 
     .widget-gps-coords {
       font-family: var(--font-mono);
       font-size: 11px;
       color: var(--text-dim);
-      margin-top: 2px;
+      margin-top: 3px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -395,14 +514,15 @@
     .widget-gps-badge {
       font-family: var(--font-mono);
       font-size: 12px;
-      font-weight: 500;
-      padding: 4px 10px;
+      font-weight: 700;
+      padding: 4px 12px;
       border-radius: 99px;
       background: var(--cyan-dim);
       color: var(--cyan);
-      border: 1px solid rgba(6, 182, 212, 0.25);
+      border: 1px solid rgba(6, 182, 212, 0.3);
       flex-shrink: 0;
       display: none;
+      animation: zoom-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     /* ── ACTION PRESENT BUTTON ───────────────────────────────────────── */
@@ -415,40 +535,41 @@
       color: #fff;
       font-family: var(--font-outfit);
       font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 8px 30px rgba(6, 182, 212, 0.25);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.25);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .btn-absen-cyber::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%);
-      opacity: 0;
-      transition: opacity 0.3s;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
     }
 
     .btn-absen-cyber:hover:not(:disabled)::before {
-      opacity: 1;
+      transform: translateX(100%);
     }
 
     .btn-absen-cyber:hover:not(:disabled) {
-      box-shadow: 0 8px 35px rgba(6, 182, 212, 0.45);
-      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(139, 92, 246, 0.45);
+      transform: translateY(-3px) scale(1.01);
     }
 
     .btn-absen-cyber:active:not(:disabled) {
-      transform: translateY(0);
-      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
     }
 
     .btn-absen-cyber:disabled {
-      opacity: 0.55;
+      opacity: 0.45;
       cursor: not-allowed;
       box-shadow: none;
     }
@@ -458,6 +579,7 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      z-index: 5;
     }
 
     .spinner-cyber {
@@ -479,14 +601,14 @@
     }
 
     .btn-absen-cyber.loading .btn-text-cyber {
-      opacity: 0.7;
+      opacity: 0.75;
     }
 
-    /* ── RESULT CARD SYSTEM ──────────────────────────────────────────── */
+    /* ── RESULT CARD SYSTEM (Playful Loot Box Style) ─────────────────── */
     .result-card-cyber {
       text-align: center;
       display: none;
-      animation: slide-up-card 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: slide-up-card 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .result-card-cyber.show {
@@ -494,67 +616,69 @@
     }
 
     @keyframes slide-up-card {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .result-card-cyber.success::before {
-      background: var(--emerald);
-    }
-    .result-card-cyber.error::before {
-      background: var(--rose);
+      from { opacity: 0; transform: translateY(40px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .result-status-shield {
-      width: 72px;
-      height: 72px;
-      border-radius: 20px;
+      width: 76px;
+      height: 76px;
+      border-radius: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 20px;
-      animation: zoom-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s both;
+      animation: zoom-pop-bounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.15s both;
     }
 
-    @keyframes zoom-pop {
-      from { transform: scale(0.5); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+    @keyframes zoom-pop-bounce {
+      0% { transform: scale(0.4); opacity: 0; }
+      70% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .result-card-cyber.success .result-status-shield {
       background: var(--emerald-dim);
       border: 1.5px solid var(--emerald);
       color: var(--emerald);
-      box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
     }
 
     .result-card-cyber.error .result-status-shield {
       background: var(--rose-dim);
       border: 1.5px solid var(--rose);
       color: var(--rose);
-      box-shadow: 0 0 25px rgba(244, 63, 94, 0.25);
+      box-shadow: 0 0 30px rgba(244, 63, 94, 0.3);
     }
 
     .result-status-shield svg {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
     }
 
     .result-title-cyber {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
       letter-spacing: -0.02em;
       margin-bottom: 8px;
+      text-transform: uppercase;
     }
 
-    .result-card-cyber.success .result-title-cyber { color: var(--emerald); }
-    .result-card-cyber.error .result-title-cyber { color: var(--rose); }
+    .result-card-cyber.success .result-title-cyber { 
+      color: var(--emerald); 
+      text-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+    }
+    
+    .result-card-cyber.error .result-title-cyber { 
+      color: var(--rose); 
+      text-shadow: 0 0 15px rgba(244, 63, 94, 0.2);
+    }
 
     .result-desc-cyber {
-      font-size: 14px;
+      font-size: 14.5px;
       color: var(--text-muted);
       line-height: 1.5;
-      font-weight: 300;
+      font-weight: 400;
       margin-bottom: 24px;
     }
 
@@ -567,7 +691,8 @@
     .meta-list-row {
       display: flex;
       justify-content: space-between;
-      padding: 8px 0;
+      align-items: center;
+      padding: 9px 0;
       border-bottom: 1px dashed rgba(255, 255, 255, 0.04);
       font-size: 13px;
     }
@@ -578,10 +703,11 @@
 
     .meta-list-label {
       color: var(--text-dim);
+      font-weight: 500;
     }
 
     .meta-list-val {
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-main);
       text-align: right;
     }
@@ -589,19 +715,20 @@
     .meta-list-val.mono {
       font-family: var(--font-mono);
       font-size: 12px;
+      color: var(--cyan);
     }
 
     .btn-ulang-cyber {
       margin-top: 24px;
       width: 100%;
-      padding: 12px 20px;
+      padding: 14px 20px;
       border-radius: var(--r-md);
-      background: var(--bg-surface);
+      background: rgba(255,255,255,0.03);
       border: 1px solid var(--border-hi);
       color: var(--text-main);
       font-family: var(--font-outfit);
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.25s;
       display: flex;
@@ -614,6 +741,7 @@
       border-color: var(--cyan);
       background: var(--cyan-dim);
       color: var(--cyan);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
     }
 
     /* ── TIME DISPLAY WIDGET ─────────────────────────────────────────── */
@@ -623,18 +751,23 @@
 
     .clock-main-digits {
       font-family: var(--font-mono);
-      font-size: 38px;
-      font-weight: 500;
+      font-size: 40px;
+      font-weight: 700;
       color: #fff;
-      letter-spacing: 0.06em;
-      text-shadow: 0 0 15px rgba(255,255,255,0.05);
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+      background: linear-gradient(to right, #fff, var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .clock-sub-date {
       font-size: 13px;
       color: var(--text-muted);
       margin-top: 4px;
-      font-weight: 400;
+      font-weight: 500;
+      letter-spacing: 0.02em;
     }
 
     /* ── FOOTER STYLING ──────────────────────────────────────────────── */
@@ -646,6 +779,7 @@
       font-size: 11px;
       color: var(--text-dim);
       font-family: var(--font-mono);
+      letter-spacing: 0.02em;
     }
 
     footer p {
@@ -658,17 +792,17 @@
       bottom: 24px;
       left: 50%;
       transform: translateX(-50%) translateY(40px);
-      background: rgba(13, 18, 30, 0.85);
+      background: rgba(13, 18, 38, 0.95);
       backdrop-filter: blur(15px);
-      border: 1px solid rgba(244, 63, 94, 0.3);
+      border: 1.5px solid rgba(244, 63, 94, 0.4);
       color: var(--rose);
       padding: 12px 20px;
       border-radius: var(--r-md);
       font-size: 13.5px;
-      font-weight: 500;
+      font-weight: 600;
       z-index: 9999;
       white-space: nowrap;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -696,7 +830,7 @@
       }
 
       .clock-main-digits {
-        font-size: 32px;
+        font-size: 34px;
       }
     }
   </style>
@@ -709,27 +843,31 @@
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9s2.015-9 4.5-9m0 0a9.015 9.015 0 0 1 8.716 2.253M12 3a9.015 9.015 0 0 0-8.716 2.253m0 0A9.003 9.003 0 0 1 12 12c2.485 0 4.5 4.03 4.5 9" />
       </svg>
-      <span>SMAN 2 Jonggol — Nawasena</span>
+      <span>Nawasena Terminal — Active</span>
     </div>
-    <h1 class="header-title-cyber">Absensi <span>Rapat</span></h1>
-    <p class="header-sub-cyber">Sistem kehadiran presisi berbasis geofence koordinat</p>
+    <h1 class="header-title-cyber">Absen <span>Synergy</span></h1>
+    <p class="header-sub-cyber">Lock coordinates, submit ID, sync presence instantly</p>
   </header>
 
   <!-- MAIN -->
   <main>
     
     <!-- TIME CLOCK DISPLAY -->
-    <section class="glass-card clock-display-panel">
+    <section class="glass-card clock-display-panel" id="clock-card">
+      <div class="card-shine-overlay"></div>
       <div class="clock-main-digits" id="clock">--:--:--</div>
       <div class="clock-sub-date" id="date">Mengsinkronkan jam...</div>
     </section>
 
     <!-- ATTENDANCE FORM -->
     <section class="glass-card" id="form-card">
-      <div class="card-heading-mono">01 — Identitas Pengurus</div>
+      <div class="card-shine-overlay"></div>
+      <div class="laser-scanner" id="laser"></div>
+      
+      <div class="card-heading-mono">01 — Identifikasi Pengurus</div>
 
       <div class="form-group">
-        <label>Organisasi Rapat</label>
+        <label>Organisasi / Divisi Rapat</label>
         <div class="org-select-grid">
           <button type="button" class="org-toggle-btn active" data-org="OSIS" onclick="selectOrg(this)">
             OSIS <small>35 Pengurus</small>
@@ -739,11 +877,12 @@
           </button>
         </div>
         <input type="hidden" id="organisasi" value="OSIS" />
+        <div class="cadet-rank-badge" id="cadet-rank">Lencana: OSIS Elite Vanguard</div>
       </div>
 
       <div class="form-group">
         <label for="nama">Nama Lengkap</label>
-        <input type="text" id="nama" placeholder="Masukkan nama lengkap sesuai absen..." autocomplete="name" />
+        <input type="text" id="nama" placeholder="Masukkan nama lengkap pengurus..." autocomplete="name" />
       </div>
 
       <div class="form-group">
@@ -773,16 +912,21 @@
       <div class="card-heading-mono" style="margin-top: 24px;">02 — Deteksi Area Radar GPS</div>
       
       <div class="location-cyber-widget" id="loc-widget">
-        <div class="widget-gps-icon">
+        <div class="widget-gps-icon" id="loc-icon">
+          <!-- Sonar Rings -->
+          <span class="sonar-ring"></span>
+          <span class="sonar-ring"></span>
+          <span class="sonar-ring"></span>
+          
           <!-- GPS Pin Outline -->
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25s-7.5-4.108-7.5-11.25a7.5 7.5 0 0 1 15 0Z" />
           </svg>
         </div>
         <div class="widget-gps-info">
           <div class="widget-gps-status" id="loc-status">Radar GPS Idle</div>
-          <div class="widget-gps-coords" id="loc-coords">Menunggu inisiasi presensi...</div>
+          <div class="widget-gps-coords" id="loc-coords">Awaiting synergy sync...</div>
         </div>
         <div class="widget-gps-badge" id="loc-dist">-- m</div>
       </div>
@@ -792,22 +936,24 @@
       <button class="btn-absen-cyber" id="btn-absen" onclick="handleAbsen()">
         <div class="btn-absen-inner">
           <div class="spinner-cyber"></div>
-          <!-- Lucide Map Pin icon -->
+          <!-- GPS Satellite Icon -->
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px;height:16px;" id="absen-btn-icon">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
           </svg>
           <span class="btn-text-cyber" id="absen-btn-text">Absen Sekarang</span>
         </div>
       </button>
     </section>
 
-    <!-- ATTENDANCE RESULT -->
+    <!-- ATTENDANCE RESULT (Playful Lootbox / Quest Completed Style) -->
     <section class="glass-card result-card-cyber" id="result-card">
+      <div class="card-shine-overlay"></div>
+      
       <div class="result-status-shield">
-        <!-- Shield lock SVGs will be injected dynamically -->
+        <!-- Shield lock SVGs injected dynamically -->
       </div>
-      <h2 class="result-title-cyber" id="result-title">Absensi Berhasil!</h2>
-      <p class="result-desc-cyber" id="result-desc">Status kehadiran pengurus terenkripsi & tersimpan di cloud database.</p>
+      <h2 class="result-title-cyber" id="result-title">QUEST COMPLETED!</h2>
+      <p class="result-desc-cyber" id="result-desc">Presence synchronized successfully with the mainframe database.</p>
       
       <div class="result-meta-list" id="result-meta">
         <!-- JS Injection -->
@@ -817,7 +963,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:14px;height:14px;">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
         </svg>
-        <span>Absen Pengurus Lain</span>
+        <span>Lakukan Absen Lain (Sync Pengurus)</span>
       </button>
     </section>
 
@@ -826,11 +972,8 @@
   <!-- FOOTER -->
   <footer>
     <p>OSIS &bull; MPK &bull; SMAN 2 Jonggol &bull; Nawasena</p>
-    <p style="color: var(--text-dim); margin-top: 4px;">Sistem Absensi Digital v1.1</p>
+    <p style="color: var(--text-dim); margin-top: 4px;">Sistem Absensi Digital v1.2 [Playful Edition]</p>
   </footer>
-
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
 
   <script>
     /* ── GEOLOCATION GEOFENCE CONFIGURATION ────────────────────────── */
@@ -838,10 +981,8 @@
     const SCHOOL_LON   = 107.07387463910511;   // Core Longitude SMAN 2 Jonggol
     const RADIUS_METER = 150;                  // Geofence Radius Limit
 
-    /* ── INITIALIZER ────────────────────────────────────────────────── */
-    window.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-    });
+    const RANK_OSIS = ['Elite Vanguard 🛡️', 'Operations Commander ⚡', 'Field Specialist 🔮', 'Nexus Sentinel 🚀', 'Prime Coordinator 🛰️'];
+    const RANK_MPK  = ['Supreme Arbiter ⚔️', 'Aegis Guardian 💎', 'Grand Inspector 🔎', 'Legislative Warden 🔮', 'Core Councilor 👑'];
 
     /* ── DIGITAL CLOCK AND TIMEZONE LABEL ────────────────────────────── */
     const HARI  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
@@ -870,25 +1011,85 @@
     updateClock();
     setInterval(updateClock, 1000);
 
+    /* ── DYNAMIC LENCANA RANKS ───────────────────────────────────────── */
+    let currentRank = 'Elite Vanguard 🛡️';
+    function updateRankBadge(org) {
+      const list = org === 'OSIS' ? RANK_OSIS : RANK_MPK;
+      // We lock the rank to a deterministic choice based on the user's name if typed,
+      // or choose one randomly initially.
+      const nameVal = document.getElementById('nama').value.trim();
+      const index = nameVal ? (nameVal.length % list.length) : Math.floor(Math.random() * list.length);
+      currentRank = list[index];
+      document.getElementById('cadet-rank').textContent = `Lencana: ${org} ${currentRank}`;
+      
+      const badge = document.getElementById('cadet-rank');
+      if (org === 'OSIS') {
+        badge.style.color = 'var(--cyan)';
+      } else {
+        badge.style.color = 'var(--violet)';
+      }
+    }
+
+    document.getElementById('nama').addEventListener('input', () => {
+      const org = document.getElementById('organisasi').value;
+      updateRankBadge(org);
+    });
+
     /* ── ORGANIZATION SELECTOR TOGGLES ───────────────────────────────── */
     function selectOrg(el) {
       document.querySelectorAll('.org-toggle-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
-      document.getElementById('organisasi').value = el.dataset.org;
+      const org = el.dataset.org;
+      document.getElementById('organisasi').value = org;
+      updateRankBadge(org);
     }
+
+    /* ── 3D HOLOGRAPHIC TILT EFFECT ──────────────────────────────────── */
+    function applyTiltEffect(el) {
+      if (!el) return;
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        // Tilt rotations
+        const rotX = -(y / (rect.height / 2)) * 10; // Max 10 deg
+        const rotY = (x / (rect.width / 2)) * 10;
+        
+        el.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
+        
+        // Holographic gloss reflection shift
+        const shine = el.querySelector('.card-shine-overlay');
+        if (shine) {
+          const angle = Math.atan2(y, x) * (180 / Math.PI);
+          shine.style.background = `linear-gradient(${angle}deg, rgba(255, 255, 255, 0.12) 0%, transparent 75%)`;
+        }
+      });
+      
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        const shine = el.querySelector('.card-shine-overlay');
+        if (shine) {
+          shine.style.background = 'transparent';
+        }
+      });
+    }
+
+    applyTiltEffect(document.getElementById('clock-card'));
+    applyTiltEffect(document.getElementById('form-card'));
+    applyTiltEffect(document.getElementById('result-card'));
 
     /* ── FORM FIELD SECURITY VALIDATION ──────────────────────────────── */
     function validateForm() {
       const nama  = document.getElementById('nama').value.trim();
       const kelas = document.getElementById('kelas').value;
-      if (!nama)  { showToast('Nama lengkap wajib diisi!'); return false; }
-      if (!kelas) { showToast('Kelas aktif wajib dipilih!'); return false; }
+      if (!nama)  { showToast('Akses Ditolak: Nama Lengkap Wajib Diisi!'); return false; }
+      if (!kelas) { showToast('Akses Ditolak: Pilihlah Kelas Aktif Anda!'); return false; }
       return true;
     }
 
     /* ── PREMIUM CYBER TOAST NOTIFIER ────────────────────────────────── */
     function showToast(msg) {
-      // Remove any existing toasts
       const old = document.querySelector('.cyber-toast');
       if (old) old.remove();
 
@@ -902,7 +1103,6 @@
       `;
       document.body.appendChild(t);
       
-      // Animation trigger
       setTimeout(() => t.classList.add('show'), 50);
       setTimeout(() => {
         t.classList.remove('show');
@@ -920,19 +1120,93 @@
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
+    /* ── NEON PARTICLE CONFETTI EXPLOSION ────────────────────────────── */
+    function triggerNeonConfetti() {
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.inset = '0';
+      container.style.pointerEvents = 'none';
+      container.style.zIndex = '99999';
+      document.body.appendChild(container);
+      
+      const colors = ['#06b6d4', '#8b5cf6', '#10b981', '#f59e0b', '#f43f5e'];
+      const particlesCount = 50;
+      
+      for (let i = 0; i < particlesCount; i++) {
+        const p = document.createElement('div');
+        p.style.position = 'absolute';
+        p.style.left = '50%';
+        p.style.top = '40%';
+        
+        const size = Math.random() * 8 + 6;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
+        
+        const activeColor = colors[Math.floor(Math.random() * colors.length)];
+        p.style.backgroundColor = activeColor;
+        p.style.boxShadow = `0 0 12px ${activeColor}, 0 0 6px rgba(255,255,255,0.8)`;
+        
+        // Physics angles
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 14 + 6;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity - 6; // Upward burst
+        
+        container.appendChild(p);
+        
+        let posX = window.innerWidth / 2;
+        let posY = window.innerHeight * 0.4;
+        let curVx = vx;
+        let curVy = vy;
+        let opacity = 1;
+        
+        const animate = () => {
+          posX += curVx;
+          posY += curVy;
+          curVy += 0.35; // gravity force
+          curVx *= 0.97; // drag friction
+          opacity -= 0.015; // fade rate
+          
+          p.style.left = posX + 'px';
+          p.style.top = posY + 'px';
+          p.style.opacity = opacity;
+          
+          if (opacity > 0) {
+            requestAnimationFrame(animate);
+          } else {
+            p.remove();
+          }
+        };
+        
+        requestAnimationFrame(animate);
+      }
+      
+      setTimeout(() => container.remove(), 2500);
+    }
+
     /* ── GEOLOCATION PRESENCE ENGINE ─────────────────────────────────── */
     async function handleAbsen() {
       if (!validateForm()) return;
 
       if (!navigator.geolocation) {
-        tampilkanHasil('error', '❌', 'GPS Tidak Didukung',
-          'Browser yang Anda gunakan tidak mendukung GPS Geolocation. Gunakan Chrome atau Safari versi terbaru.',
-          { 'Masalah': 'Hardware / Browser tidak didukung' });
+        tampilkanHasil('error', '❌', 'GPS NOT FOUND',
+          'Satelit GPS tidak terdeteksi pada perangkat Anda. Silakan hubungkan kembali sensor koordinat GPS.',
+          { 'Status Radar': 'Sinyal Gagal Diperoleh', 'Penyebab': 'Browser tidak mendukung Geolocation' });
         return;
       }
 
       setLoading(true);
-      updateLocStatus('GPS...', 'Menghubungkan satelit GPS...', 'Akurasi terbaik sedang dihitung...', 'var(--cyan)');
+      
+      // Start Sonar pulse animation
+      document.querySelectorAll('.sonar-ring').forEach(r => r.classList.add('animating'));
+      
+      updateLocStatus(
+        '⏳', 
+        'PEMINDAIAN SATELIT...', 
+        'Mengunci radar koordinat SMAN 2 Jonggol...', 
+        'var(--cyan)'
+      );
 
       navigator.geolocation.getCurrentPosition(
         async (pos) => {
@@ -940,8 +1214,12 @@
           const userLon = pos.coords.longitude;
           const akurasi = pos.coords.accuracy.toFixed(0);
 
-          updateLocStatus('📍', `Satelit terkunci (±${akurasi}m)`,
-            userLat.toFixed(6) + ', ' + userLon.toFixed(6), 'var(--emerald)');
+          updateLocStatus(
+            '📍', 
+            `COORDINATES LOCKED (±${akurasi}m)`,
+            `${userLat.toFixed(6)}, ${userLon.toFixed(6)}`, 
+            'var(--emerald)'
+          );
 
           const jarak        = hitungJarak(userLat, userLon, SCHOOL_LAT, SCHOOL_LON);
           const jarakRounded = Math.round(jarak);
@@ -951,41 +1229,48 @@
           distBadge.textContent   = jarakRounded + ' m';
 
           // Set dynamic proximity colors for badge
-          if (jarakRounded <= 50) {
-            distBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+          if (jarakRounded <= 15) {
+            distBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
             distBadge.style.background  = 'var(--emerald-dim)';
             distBadge.style.color       = 'var(--emerald)';
-          } else if (jarakRounded <= 100) {
-            distBadge.style.borderColor = 'rgba(6, 182, 212, 0.3)';
+          } else if (jarakRounded <= 50) {
+            distBadge.style.borderColor = 'rgba(6, 182, 212, 0.4)';
             distBadge.style.background  = 'var(--cyan-dim)';
             distBadge.style.color       = 'var(--cyan)';
-          } else if (jarakRounded <= RADIUS_METER) {
-            distBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+          } else if (jarakRounded <= 100) {
+            distBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
             distBadge.style.background  = 'var(--amber-dim)';
             distBadge.style.color       = 'var(--amber)';
           } else {
-            distBadge.style.borderColor = 'rgba(244, 63, 94, 0.3)';
+            distBadge.style.borderColor = 'rgba(244, 63, 94, 0.4)';
             distBadge.style.background  = 'var(--rose-dim)';
             distBadge.style.color       = 'var(--rose)';
           }
 
+          // Delay slightly for powerful scan visual effect
+          await new Promise(r => setTimeout(r, 1200));
+
           /* ── 1. GEOLOCATION BEYOND GEOFENCE OUT OF BOUNDS ── */
           if (jarak > RADIUS_METER) {
             setLoading(false);
-            tampilkanHasil('error', '🚫', 'Di Luar Area Geofence',
-              'Absensi ditolak. Lokasi Anda terdeteksi di luar batas area geofence toleransi SMAN 2 Jonggol.',
+            tampilkanHasil(
+              'error', 
+              '🚫', 
+              'OUT OF RANGE AREA',
+              'Transmisi presensi ditolak. Sinyal GPS Anda terdeteksi berada di luar perimeter perlindungan geofence.',
               {
-                'Lokasi Koordinat' : userLat.toFixed(6) + ', ' + userLon.toFixed(6),
-                'Jarak ke Pusat'   : jarakRounded + ' meter',
-                'Batas Toleransi'  : RADIUS_METER + ' meter',
-                'Status Keamanan'  : 'DITOLAK — Log tidak disimpan',
-              });
+                'Lokasi Koordinat' : `${userLat.toFixed(6)}, ${userLon.toFixed(6)}`,
+                'Deteksi Jarak'   : `${jarakRounded} meter dari gerbang`,
+                'Batas Toleransi'  : `${RADIUS_METER} meter`,
+                'Synergy Status'  : 'DITOLAK — Signal Lost 📵',
+              }
+            );
             return;
           }
 
           /* ── 2. GEOLOCATION WITHIN GEOFENCE -> SUBMIT SERVERLESS POST API ── */
           try {
-            updateLocStatus('⏳', 'Mengenkripsi data...', 'Menyimpan ke cloud PostgreSQL...', 'var(--violet)');
+            updateLocStatus('⏳', 'TRANSMITTING IDENTIFICATION...', 'Enkripsi data presensi & kirim ke PostgreSQL...', 'var(--violet)');
             
             const res = await fetch('/api/absen', {
               method : 'POST',
@@ -1005,9 +1290,13 @@
             setLoading(false);
 
             if (!res.ok) {
-              tampilkanHasil('error', '⚠️', 'Penyimpanan Gagal',
-                'Server menolak menyimpan data: ' + (result.error || 'Terjadi kesalahan sistem.'),
-                { 'Penyebab': result.error || 'Server error' });
+              tampilkanHasil(
+                'error', 
+                '⚠️', 
+                'SERVER TRANSMISSION FAILED',
+                'Penyimpanan gagal: ' + (result.error || 'Terjadi gangguan sinyal server.'),
+                { 'Penyebab': result.error || 'Server error' }
+              );
               return;
             }
 
@@ -1015,36 +1304,63 @@
             const kelas = document.getElementById('kelas').value;
             const org = document.getElementById('organisasi').value;
 
-            tampilkanHasil('success', '✅', 'Kehadiran Tercatat!',
-              `Halo <strong>${esc(nama)}</strong>! Terima kasih telah hadir tepat waktu. Identitas Anda terverifikasi GPS.`,
+            // Trigger beautiful neon particle splash
+            triggerNeonConfetti();
+
+            // Playful feedback texts
+            let proximityFeedback = '';
+            if (jarakRounded <= 15) {
+              proximityFeedback = '🌟 PRESISI SEMPURNA! Koordinat Anda menempel di pusat sekolah.';
+            } else if (jarakRounded <= 50) {
+              proximityFeedback = '🟢 SECURE ZONE! Sinyal Anda terdeteksi sangat aman.';
+            } else if (jarakRounded <= 100) {
+              proximityFeedback = '🔵 MODERATE ZONE! Akses transmisi di area normal.';
+            } else {
+              proximityFeedback = '🟡 PERIMETER LUAR! Anda berdiri tepat di ujung geofence.';
+            }
+
+            tampilkanHasil(
+              'success', 
+              '✅', 
+              'QUEST COMPLETED! 🏆',
+              `Halo Agen <strong>${esc(nama)}</strong>! Koneksi berhasil diselaraskan. Identitas Anda terverifikasi GPS.`,
               {
-                'Nama Lengkap'   : nama,
-                'Kelas / Organisasi'   : `${kelas} · ${org}`,
-                'Waktu Presisi'  : HARI[new Date().getDay()] + ', ' + new Date().getDate() + ' ' +
-                                  BULAN[new Date().getMonth()] + ' ' + pad(new Date().getHours()) + ':' + pad(new Date().getMinutes()) + ' WIB',
-                'Jarak Presisi'  : `${jarakRounded} meter dari titik koordinat sekolah`,
-                'Status Database': 'TERSIMPAN (SSL-ENCRYPTED)',
-              });
+                'Nama Pengutus'   : nama,
+                'Lencana Pengurus' : `${org} ${currentRank}`,
+                'Bonus Reward'     : '+100 XP (Presence Synced ⚡)',
+                'Sektor Radar'    : 'SMAN 2 Jonggol Sect-9',
+                'Akurasi Jarak'    : `${jarakRounded} meter (${proximityFeedback})`,
+                'Jalur Keamanan'   : 'TERENKRIPSI (SSL-ENCRYPTED)'
+              }
+            );
 
           } catch (err) {
             setLoading(false);
-            tampilkanHasil('error', '⚠️', 'Kegagalan Jaringan',
-              'Tidak dapat terhubung ke server cloud. Harap periksa jaringan internet Anda dan coba lagi.',
-              { 'Masalah': err.message });
+            tampilkanHasil(
+              'error', 
+              '⚠️', 
+              'CONNECTION TIMEOUT',
+              'Tidak dapat melakukan sinkronisasi dengan database awan. Periksalah jaringan data Anda.',
+              { 'Gangguan': err.message }
+            );
           }
         },
 
         (err) => {
           setLoading(false);
           const pesan = {
-            1: 'Akses GPS ditolak. Tolong berikan izin lokasi GPS di browser Anda dan coba lagi.',
-            2: 'Sinyal lokasi tidak tersedia. Pastikan sensor GPS ponsel aktif.',
-            3: 'Waktu tunggu satelit habis. Silakan coba lagi di tempat terbuka.',
+            1: 'Akses GPS ditolak! Harap aktifkan izin lokasi di peramban internet Anda.',
+            2: 'Satelit tidak mendeteksi lokasi sensor GPS ponsel Anda.',
+            3: 'Koneksi satelit timeout. Silakan keluar ruangan dan coba kembali.',
           };
-          updateLocStatus('❌', 'Koneksi Satelit Gagal', 'GPS gagal terhubung', 'var(--rose)');
-          tampilkanHasil('error', '📵', 'Lokasi Tidak Dapat Diakses',
-            pesan[err.code] || 'Terjadi kesalahan GPS tidak dikenal.',
-            { 'Kode Eror': `GPS_ERR_${err.code}` });
+          updateLocStatus('❌', 'RADAR GPS FAILED', 'Sinyal satelit gagal dikunci', 'var(--rose)');
+          tampilkanHasil(
+            'error', 
+            '📵', 
+            'SIGNAL LOST',
+            pesan[err.code] || 'Terjadi kegagalan deteksi sistem GPS.',
+            { 'Kode Eror': `GPS_ERR_${err.code}` }
+          );
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
@@ -1053,27 +1369,41 @@
     /* ── STATE LOADING INTERACTION HANDLER ──────────────────────────── */
     function setLoading(state) {
       const btn = document.getElementById('btn-absen');
+      const laser = document.getElementById('laser');
+      
       btn.disabled = state;
       btn.classList.toggle('loading', state);
       
       const icon = document.getElementById('absen-btn-icon');
+      const btnText = document.getElementById('absen-btn-text');
+      
       if (state) {
         icon.style.display = 'none';
+        btnText.textContent = 'Menghubungkan Radar...';
+        laser.classList.add('scanning');
       } else {
         icon.style.display = 'block';
+        btnText.textContent = 'Absen Sekarang';
+        laser.classList.remove('scanning');
+        // Stop Sonar rings
+        document.querySelectorAll('.sonar-ring').forEach(r => r.classList.remove('animating'));
       }
     }
 
     /* ── GPS LOCATION STATUS BAR MODIFIER ────────────────────────────── */
     function updateLocStatus(iconHtml, status, coords, color) {
       const widget = document.getElementById('loc-widget');
-      const iconEl = widget.querySelector('.widget-gps-icon');
+      const iconEl = document.getElementById('loc-icon');
       const statusEl = document.getElementById('loc-status');
       const coordsEl = document.getElementById('loc-coords');
       
-      iconEl.innerHTML = typeof iconHtml === 'string' && iconHtml.length > 3 
-        ? iconHtml 
-        : `<span style="font-size: 18px;font-style:normal">${iconHtml}</span>`;
+      // We retain the sonar rings in the iconEl
+      iconEl.innerHTML = `
+        <span class="sonar-ring ${iconHtml === '⏳' ? 'animating' : ''}"></span>
+        <span class="sonar-ring ${iconHtml === '⏳' ? 'animating' : ''}"></span>
+        <span class="sonar-ring ${iconHtml === '⏳' ? 'animating' : ''}"></span>
+        ${iconHtml.length > 3 ? iconHtml : `<span style="font-size: 18px;font-style:normal;z-index:5">${iconHtml}</span>`}
+      `;
       
       statusEl.textContent = status;
       coordsEl.textContent = coords;
@@ -1082,6 +1412,11 @@
         iconEl.style.color = color;
         iconEl.style.borderColor = color.replace(')', ', 0.25)');
         iconEl.style.background = color.replace(')', ', 0.08)');
+        
+        // Also update sonar rings border color dynamically
+        iconEl.querySelectorAll('.sonar-ring').forEach(r => {
+          r.style.borderColor = color;
+        });
       }
     }
 
@@ -1094,7 +1429,7 @@
       document.getElementById('result-title').textContent = title;
       document.getElementById('result-desc').innerHTML    = desc;
       
-      // Inject Lucide SVGs into shield base on status type
+      // Inject Playful outcome icons
       if (type === 'success') {
         shield.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -1114,13 +1449,20 @@
         ? Object.entries(meta).map(([k,v]) => `
             <div class="meta-list-row">
               <span class="meta-list-label">${esc(k)}</span>
-              <span class="meta-list-val ${k.includes('Lokasi') || k.includes('Kode') ? 'mono' : ''}">${esc(v)}</span>
+              <span class="meta-list-val ${k.includes('Lokasi') || k.includes('Keamanan') ? 'mono' : ''}">${v}</span>
             </div>
           `).join('')
         : '';
         
       rc.className = 'glass-card result-card-cyber show ' + type;
       fc.style.display = 'none';
+      
+      // Auto tilt initial wiggle for reward feeling
+      rc.style.transform = 'perspective(1000px) rotateX(10deg) rotateY(-5deg) scale3d(1.02, 1.02, 1.02)';
+      setTimeout(() => {
+        rc.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      }, 600);
+      
       rc.scrollIntoView({ behavior:'smooth', block:'start' });
     }
 
@@ -1129,13 +1471,17 @@
       document.getElementById('result-card').className = 'glass-card result-card-cyber';
       document.getElementById('form-card').style.display = 'block';
       document.getElementById('loc-dist').style.display  = 'none';
+      
       updateLocStatus(`
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
           <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25s-7.5-4.108-7.5-11.25a7.5 7.5 0 0 1 15 0Z" />
         </svg>
-      `, 'Radar GPS Idle', 'Menunggu inisiasi presensi...', 'var(--cyan)');
+      `, 'Radar GPS Idle', 'Awaiting synergy sync...', 'var(--cyan)');
+      
       setLoading(false);
+      const org = document.getElementById('organisasi').value;
+      updateRankBadge(org);
       window.scrollTo({ top:0, behavior:'smooth' });
     }
 
