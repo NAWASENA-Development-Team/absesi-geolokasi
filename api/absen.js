@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
     // ── VALIDASI JARAK SERVER-SIDE (lapisan keamanan paling penting) ──────
     // Validasi ini mencegah manipulasi dari sisi client (misal: edit JS di browser)
-    const RADIUS_METER = 100;
+    const RADIUS_METER = 150;
     const SCHOOL_LAT   = -6.469821658683405;  // ← Ganti jika perlu
     const SCHOOL_LON   = 107.07387463910511;  // ← Ganti jika perlu
 
