@@ -981,8 +981,74 @@
     const SCHOOL_LON   = 107.07387463910511;   // Core Longitude SMAN 2 Jonggol
     const RADIUS_METER = 150;                  // Geofence Radius Limit
 
-    const RANK_OSIS = ['Elite Vanguard 🛡️', 'Operations Commander ⚡', 'Field Specialist 🔮', 'Nexus Sentinel 🚀', 'Prime Coordinator 🛰️'];
-    const RANK_MPK  = ['Supreme Arbiter ⚔️', 'Aegis Guardian 💎', 'Grand Inspector 🔎', 'Legislative Warden 🔮', 'Core Councilor 👑'];
+    const RANK_OSIS = [
+      'Supreme Nexus Commander 👑',
+      'Alpha Synergy Vice ⚡',
+      'Core Archive Warden 📝',
+      'Quantum Coin Master 🪙',
+      'Elite Vanguard Specialist 🛡️',
+      'Hyperion Liaison Officer 📡',
+      'Circuit Logistic Lord 📦',
+      'Nova Event Architect 🌠',
+      'Cyber Protocol Master 💾',
+      'Pulse Public Relations 🎙️',
+      'Vector Discipline Envoy ⚔️',
+      'Plasma Creative Lead 🎨',
+      'Titanium Security Shield 🦾',
+      'Chrono Schedule Keeper ⏱️',
+      'Helix Harmony Envoy 🕊️',
+      'Summit Pioneer Cadet 🏔️',
+      'Digital Media Sentinel 🌌',
+      'Grid System Executor 🕸️',
+      'Beta Operation Agent 🛠️',
+      'Delta Field Coordinator 🎯',
+      'Vortex Social Catalyst 🌪️',
+      'Signal Broadcast Host 📻',
+      'Atmos Spirit Booster ⚡',
+      'Quantum Synergy Scout 🧬',
+      'Neon Project Innovator 💡',
+      'Alpha Task Ranger 🥷',
+      'Cosmic Arts Curator 🎭',
+      'Omega Field Officer 🚩',
+      'Static Asset Defender 🧱',
+      'Spectrum Design Envoy 🌈',
+      'Echo Voice Ambassador 🗣️',
+      'Starlight Charity Agent 🌟',
+      'Photon Sports Trainer 👟',
+      'Frequency Network Scout 📶',
+      'Ultimate Synergy Zenith 🏆'
+    ];
+
+    const RANK_MPK  = [
+      'Supreme Archon 👑',
+      'Aegis Guardian 💎',
+      'Grand Inspector 🔎',
+      'Legislative Warden ⚖️',
+      'Core Councilor 🏛️',
+      'Prime Supervisor 🛰️',
+      'Vanguard Advisor 🛡️',
+      'Spectrum Analyst 📊',
+      'Quantum Auditor 🧬',
+      'Cyber Adjudicator ⚖️',
+      'Helix Overseer 🌀',
+      'Nova Monitor Agent ☄️',
+      'Alpha Jurist 📜',
+      'Protocol Judge ⚖️',
+      'Signal Gatekeeper ⛩️',
+      'Vector Ombudsman 🧭',
+      'Pulse Auditor 🎚️',
+      'Digital Inquisitor 🕵️',
+      'Grid Archon 🕸️',
+      'Summit Chief Advisory 🏔️',
+      'Matrix Arbitrator 🌐',
+      'Helix Moderator 🌀',
+      'Titanium Overseer 🦾',
+      'Omega Custodian 🔑',
+      'Chrono Assessor ⏱️',
+      'Frequency Evaluator 📻',
+      'Delta Lawgiver 📜',
+      'Ultimate Zenith Sentinel 🏆'
+    ];
 
     /* ── DIGITAL CLOCK AND TIMEZONE LABEL ────────────────────────────── */
     const HARI  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
@@ -1489,6 +1555,9 @@
     function esc(str) {
       return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
+
+    // Inisialisasi awal lencana saat halaman dimuat
+    updateRankBadge('OSIS');
   </script>
 </body>
 </html>
